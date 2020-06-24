@@ -1,0 +1,52 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "crudAjax2020", "crudAjax2020\crudAjax2020.csproj", "{80C842DE-F6B1-4601-85C6-BCFC0F0F0BDB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1. UI", "1. UI", "{E56BFA3D-18C3-48BC-B16C-32DF7BF19354}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2. Business", "2. Business", "{0B6E8CB3-3E34-4ED1-9DED-6934B2CF04D8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3. Data", "3. Data", "{BFD081AA-CE2D-4C3C-9E8C-292A866517C4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataCapas", "DataCapas\DataCapas.csproj", "{6C435BC5-E586-4F55-88E1-0F7B8CEB9FA8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntityCapas", "EntityCapas\EntityCapas.csproj", "{F8824775-93F7-46C8-B243-9A649453A24E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Business", "Business\Business.csproj", "{72E16993-C25A-40CF-B941-76144ACBEA42}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{80C842DE-F6B1-4601-85C6-BCFC0F0F0BDB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80C842DE-F6B1-4601-85C6-BCFC0F0F0BDB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80C842DE-F6B1-4601-85C6-BCFC0F0F0BDB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80C842DE-F6B1-4601-85C6-BCFC0F0F0BDB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6C435BC5-E586-4F55-88E1-0F7B8CEB9FA8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C435BC5-E586-4F55-88E1-0F7B8CEB9FA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C435BC5-E586-4F55-88E1-0F7B8CEB9FA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C435BC5-E586-4F55-88E1-0F7B8CEB9FA8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F8824775-93F7-46C8-B243-9A649453A24E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F8824775-93F7-46C8-B243-9A649453A24E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F8824775-93F7-46C8-B243-9A649453A24E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F8824775-93F7-46C8-B243-9A649453A24E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{72E16993-C25A-40CF-B941-76144ACBEA42}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{72E16993-C25A-40CF-B941-76144ACBEA42}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72E16993-C25A-40CF-B941-76144ACBEA42}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{72E16993-C25A-40CF-B941-76144ACBEA42}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{80C842DE-F6B1-4601-85C6-BCFC0F0F0BDB} = {E56BFA3D-18C3-48BC-B16C-32DF7BF19354}
+		{6C435BC5-E586-4F55-88E1-0F7B8CEB9FA8} = {BFD081AA-CE2D-4C3C-9E8C-292A866517C4}
+		{F8824775-93F7-46C8-B243-9A649453A24E} = {0B6E8CB3-3E34-4ED1-9DED-6934B2CF04D8}
+		{72E16993-C25A-40CF-B941-76144ACBEA42} = {0B6E8CB3-3E34-4ED1-9DED-6934B2CF04D8}
+	EndGlobalSection
+EndGlobal

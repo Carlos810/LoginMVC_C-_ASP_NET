@@ -1,0 +1,419 @@
+﻿@using Enterprise.Capas.Business.EntityCapas
+@model List<EPersona>
+@using System.Text.RegularExpressions;
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link href="~/Content/styles.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <title>Index</title>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-7">
+                <div class="jumbotron">
+                    @*<div class="input-group">
+                            <input class="form-control" placeholder="Buscar Persona">
+                            <span class="input-group-btn">
+                               <button class="btn btn-default" type="button">
+                                   <span class="glyphicon glyphicon-search" ></span>
+                               </button>
+                           </span>
+                        </div>*@
+
+                    <table class="table table-responsive table-hover">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Paterno</th>
+                                <th>Materno</th>
+                                <th>Sexo</th>
+                                <th>Musica Favorita</th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="tBody">
+                            @*
+                                Aqui se pinta la tabla principal.
+                                }*@
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-md-4 col-md-offset-1">
+
+                <h3 id="mainTitle" class="text-center">Agregar Persona</h3>
+
+                <form method="post">
+
+                    @Html.Hidden("V_Id", null)
+
+                    <div class="form-group">
+                        <label for="Nombre">Nombre</label>
+                        @Html.TextBox("Nombre", null, new { @class = "form-control", id = "Nombre", placeholder = "Nombre Completo", })
+                        <div id="mensaje1" class="errores">Escribe tu nombre</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="Paterno">Paterno</label>
+                        @Html.TextBox("Paterno", null, new { @class = "form-control", id = "Paterno", placeholder = "Apellido Paterno" })
+                        <div id="mensaje2" class="errores">Escribe tu apellido paterno</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="Materno">Materno</label>
+                        @Html.TextBox("Materno", null, new { @class = "form-control", id = "Materno", placeholder = "Apellido Materno" })
+                        <div id="mensaje3" class="errores">Escribe tu apellido materno</div>
+                    </div>
+
+                    @*Dropdown Para sexo*@
+                    <div class="form-group">
+                        <label for="Sexo">Sexo</label>
+                        @Html.DropDownList("SexoId", null, "[Elige tu sexo]", new { @class = "form-control selected ", id = "ddl", })
+                    </div>
+
+
+                    @*Checkbox para elegir el tipo de musica predilecto.*@
+                    <div class="form-group">
+                        <label for="Musica">Generos Musicales</label> <br />
+                        @foreach (EMusica m in ViewBag.MusicaId)
+                        {
+                            <label class="form-control">@Html.CheckBox(string.Format("chk{0}", m.Id)) <span>@m.Nombre </span></label>  <br />
+                        }
+                    </div>
+
+
+                    <button type="reset" class="btn btn-success btn-block btn-Agregar">Agregar</button>
+
+                    <button type="reset" class="btn btn-success btn-block btn-Editar" style="display:none">Editar</button>
+
+                    <button type="reset" class="btn btn-danger btn-block btn-Eliminar" style="display:none">Eliminar</button>
+
+                    <button type="reset" class="btn btn-default btn-block btn-Cancelar">Cancelar</button>
+
+
+                </form>
+
+            </div>
+        </div>
+
+        <table>
+            <tr>
+                <td>
+                    @if (TempData["ERROR"] != null)
+                    {
+                        @TempData["ERROR"].ToString();
+                    }
+                </td>
+                <td>
+                    @if (TempData["MSG"] != null)
+                    {
+                        @TempData["MSG"].ToString();
+                    }
+                </td>
+
+            </tr>
+        </table>
+
+    </div>
+
+    <script src="~/Scripts/jquery-1.9.0.js"></script>
+    <script src="~/Scripts/bootstrap.js"></script>
+    <script>        
+
+
+        $(document).ready(function () {
+
+
+            //Evento - Boton Cancelar.
+            $('.btn-Cancelar').click(function () {
+                $('#mainTitle').text('Agregar Persona');
+                $('.btn-Agregar').show();
+                $('.btn-Editar').hide();
+                $('.btn-Eliminar').hide();
+                desbloquearInputs();
+            });
+
+            // Mostrar registros tabla Vista_Personas.
+            $.ajax({
+                url: '/Inicio/tablaPrincipal',
+                type: 'Get',
+                cache: false,
+                ContentType: 'application/json;charset=utf-8',
+                dataType: 'json',
+                success: function (r) {
+                    if (r.hayError == true) {
+                        alert(r.mensaje);
+                    } else {
+                        tablaPersonasIzquierda(r.list);
+                    }
+                },
+                error: function (ex) {
+                    alert(ex.responseText);
+                }
+            });
+
+            // Agregar Persona.
+            $('.btn-Agregar').click(function () {
+
+                let objeto = {
+                    Nombre: $("#Nombre").val(),
+                    Paterno: $("#Paterno").val(),
+                    Materno: $("#Materno").val(),
+                    SexoId: $("#ddl").val(),
+                    chk1: "1 " + $('#chk1').prop('checked'),
+                    chk2: "2 " + $('#chk2').prop('checked'),
+                    chk4: "4 " + $('#chk4').prop('checked'),
+                    chk5: "5 " + $("#chk5").prop('checked')
+                };
+                let objserializadojson = JSON.stringify(objeto);
+                $.ajax({
+                    url: '/Inicio/AgregarPersona',
+                    type: 'POST',
+                    data: objserializadojson,
+                    cache: false,
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'JSON',
+                    success: function (r) {
+                        if (r.hayError == true) {
+                            alert(r.mensaje);
+                        } else {
+                            $('#tBody').empty();
+                            tablaPersonasIzquierda(r.list);
+                        }
+                    },
+                    error: function (ex) {
+                        alert(ex.responseText);
+                    }
+                });
+            });
+
+            // EliminarPersona.
+            $('.btn-Eliminar').click(function () {
+                $.ajax({
+                    url: '/Inicio/eliminarPersona/' + $('#V_Id').val(),
+                    type: 'Post',
+                    //Este POST no lleva ningun objeto, pues solo necesito pasar el id del elemento que se desea eliminar.
+                    contentType: 'application/json/;charset=utf-8',
+                    dataType: 'JSON',
+                    cache: false,
+                    success: function (r) {
+                        if (r.hayError == true) {
+                            alert(r.mensaje);
+                        } else {
+                            // Limpiar y pintar tabla personas.
+                            $('#tBody').empty();
+                            tablaPersonasIzquierda(r.list);
+                            // Reset inputs para agregar personas despues de eliminarlas.
+                            $('#mainTitle').text('Agregar Persona');
+                            $('.btn-Eliminar').hide();
+                            $('.btn-Agregar').show();
+                            desbloquearInputs();
+                            limpiarInputs();
+
+                            /* ===> Resetear TODOS los INPUT despues de eliminarPersona en caso de no funcionar propiedad "reset" del boton eliminar.
+                             *
+                             * $('#mainTitle').text('Agregar Persona');
+                             * $('.btn-Eliminar').hide();
+                             * $('.btn-Agregar').show();
+                             * desbloquearInputs();
+                             * limpiarInputs();
+                             * cleanCheckboxMusic();
+                             *
+                            */
+                        }
+                    },
+                    error: function (ex) {
+                        alert(ex.responseText);
+                    }
+                });
+
+            });
+
+            $('.btn-Editar').click(function () {
+                debugger;
+                let objeto = {
+                    Id :$('#V_Id').val(),
+                    Nombre: $("#Nombre").val(),
+                    Paterno: $("#Paterno").val(),
+                    Materno: $("#Materno").val(),
+                    SexoId: $("#ddl").val(),
+                    chk1: "1 " + $('#chk1').prop('checked'),
+                    chk2: "2 " + $('#chk2').prop('checked'),
+                    chk4: "4 " + $('#chk4').prop('checked'),
+                    chk5: "5 " + $("#chk5").prop('checked')
+                };
+                let objserializadojson = JSON.stringify(objeto);
+                $.ajax({
+                    url: '/Inicio/editarPersona/' + $('#V_Id').val(),
+                    type: 'POST',
+                    data: objserializadojson,
+                    cache: false,
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'JSON',
+                    success: function (r) {
+                        if (r.hayError == true) {
+                            alert(r.mensaje);
+                        } else {
+                            // Limpiar y pintar tabla personas.
+                            $('#tBody').empty();
+                            tablaPersonasIzquierda(r.list);
+                            // Reset inputs para agregar personas despues de eliminarlas.
+                            $('#mainTitle').text('Agregar Persona');
+                            $('.btn-Editar').hide();
+                            $('.btn-Agregar').show();
+                            limpiarInputs();
+                        }
+                    },
+                    error: function (ex) {
+                        alert(ex.responseText);
+                    }
+                });
+            });
+
+            //Funciones simplificar codigo.
+
+            function tablaPersonasIzquierda(listaPersonas) {
+                var filas = "";
+                $.each(listaPersonas, function (i, e) {
+
+                    if (e.ListaMusica != 0) // persona ha seleccionado 1 o varios Generos Musicales.
+                    {
+                        let generosMusicales = "Mis generos favoritos son : \n";
+                        $.each(e.ListaMusica, function (i, es) {
+                            generosMusicales += "-> " + es.Nombre + " - " + es.Descripcion + " \n";
+                        });
+                        filas += "<tr><td>" + e.Nombre + "</td><td>" + e.Paterno + "</td><td>" + e.Materno + "</td><td>" + e.SEXO.Nombre + "</td><td><a href='#' title='" + generosMusicales + "' style='text-decoration: none'>" + e.ListaMusica.length.toString() + "</a></td><td><a href='#' data-idpersona='" + e.Id + "' class='eliminar' >Eliminar</a></td> <td><a href='#' data-idpersona='" + e.Id + "' class='editar'>Editar</a></td>"
+                    }
+                    else // persona NO eligio generos musicales.
+                    {
+                        filas += "<tr><td>" + e.Nombre + "</td><td>" + e.Paterno + "</td><td>" + e.Materno + "</td><td>" + e.SEXO.Nombre + "</td><td><a href='#' title='" + "No ha elegido generos musicales." + "' style='text-decoration: none'>" + e.ListaMusica.length.toString() + "</a></td><td><a href='#' data-idpersona='" + e.Id + "' class='eliminar' >Eliminar</a></td><td><a href='#' data-idpersona='" + e.Id + "' class='editar'>Editar</a></td>"
+                    }
+                });
+
+                $("#tBody").html(filas);
+
+                //Front-end - ELIMINAR persona, ( Desde un Listado que es almacenado en DB pinta el html de forma dinamica ).
+                $(".eliminar").click(function () {
+                    var id = $(this).data("idpersona");
+                    cleanCheckboxMusic();
+                    $.ajax({
+                        url: '/Inicio/ObtenerPersonaPorId_B/' + id,
+                        type: 'Get',
+                        ContentType: 'application/json;charset=utf-8',
+                        dataType: 'json',
+                        success: function (r) {
+                            if (r.hayError == true) {
+                                alert(r.mensaje);
+                            } else {
+                                // Evento - Eliminar : * Agregar - oculto , * Editar - oculto , * Eliminar - visible .
+                                $('#mainTitle').text('Eliminar Persona')
+                                $('.btn-Eliminar').show();
+                                $('.btn-Agregar').hide();
+                                $('.btn-Editar').hide();
+                                paintHtmlDOM(r.persona);
+                                bloquearInputs();
+                            }
+                        },
+                        error: function (ex) {
+                            alert(ex.responseText);
+                        }
+                    });
+                });
+
+                //Front-end - EDITAR persona, ( Desde un Listado que es almacenado en DB pinta el html de forma dinamica ).
+                $(".editar").click(function () {
+                    var id = $(this).data("idpersona");
+                    cleanCheckboxMusic();
+                    $.ajax({                        
+                        url: '/Inicio/ObtenerPersonaPorId_B/' + id,
+                        type: 'Get',
+                        ContentType: 'application/json;charset=utf-8',
+                        dataType: 'json',
+                        success: function (r) {
+                            //debugger;
+                            if (r.hayError == true) {
+                                alert(r.mensaje);
+                            } else {
+                                // Evento - EDITAR : * Agregar - oculto , * Editar - visible , * Eliminar - oculto .
+                                $('#mainTitle').text('Editar Persona')
+                                $('.btn-Editar').show();
+                                $('.btn-Agregar').hide();
+                                $('.btn-Eliminar').hide();
+                                paintHtmlDOM(r.persona);
+                                desbloquearInputs();
+                            }
+                        },
+                        error: function (ex) {
+                            alert(ex.responseText);
+                        }
+                    });
+                });
+            }
+
+            function cleanCheckboxMusic() {   // Aplica RESET al estado anterior de todos los Checkbox.
+                for (var i = 1; i < 6 ; i++)
+                    $('#chk' + [i]).prop('checked', false);
+            };
+
+            function paintHtmlDOM(persona) { // Solo al presionar EDITAR y ELIMINAR.
+                $('#V_Id').val(persona[0].Id);
+                $('#Nombre').val(persona[0].Nombre);
+                $('#Paterno').val(persona[0].Paterno);
+                $('#Materno').val(persona[0].Materno);
+                $('#ddl').val(persona[0].SexoId)
+
+                $.each(persona, function (i, e) { // Leer listado con generos de Musica Seleccionados por el usuario.
+                    let el = e.ListaMusica;
+                    if (el != 0) {
+                        for (var i = 0; i < el.length ; i++) {
+                            $('#chk' + el[i].Id).prop('checked', true);
+                        }
+                    }
+                });
+            };
+
+            function bloquearInputs() {  //bloquea el ingreso de datos o modificacion de inputs del formulario.
+                $('#Nombre').attr('disabled', 'disabled');
+                $('#Paterno').attr('disabled', 'disabled');
+                $('#Materno').attr('disabled', 'disabled');
+                $('#ddl').attr('disabled', 'disabled');
+                $('#chk1').attr('disabled', 'disabled');
+                $('#chk2').attr('disabled', 'disabled');
+                $('#chk4').attr('disabled', 'disabled');
+                $('#chk5').attr('disabled', 'disabled');
+            }
+
+            function desbloquearInputs() {  //  Activa el ingreso de datos o modificacion de inputs del formulario.
+                $('#Nombre').removeAttr('disabled', 'disabled');
+                $('#Paterno').removeAttr('disabled', 'disabled');
+                $('#Materno').removeAttr('disabled', 'disabled');
+                $('#ddl').removeAttr('disabled', 'disabled');
+                $('#chk1').removeAttr('disabled', 'disabled');
+                $('#chk2').removeAttr('disabled', 'disabled');
+                $('#chk4').removeAttr('disabled', 'disabled');
+                $('#chk5').removeAttr('disabled', 'disabled');
+            }
+            
+            function limpiarInputs() {
+                $('#Nombre').val('');
+                $('#Paterno').val('');
+                $('#Materno').val('');
+                $('#ddl').val('0');
+                $('#chk1').prop('disabled', false);
+                $('#chk2').prop('disabled', false);
+                $('#chk4').prop('disabled', false);
+                $('#chk5').prop('disabled', false);
+            }
+
+        });// semicolon final.
+    </script>
+</body>
+</html>
