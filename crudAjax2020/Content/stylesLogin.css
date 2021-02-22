@@ -1,0 +1,32 @@
+﻿
+body{
+    background-color: #ffcccc;
+}
+
+.btn.btn-success.btn-block,
+.btn.btn-danger.btn-block {
+    font-size: 17px;
+}
+
+.col-md-4.col-md-offset-4 {
+    border: 2px solid #bababa;
+    padding: 2.8em;
+    margin-top: 70px;
+    border-radius: 12px;
+    background-color:#f1f2f6;
+}
+
+.input {
+    height:40px;
+}
+
+.fillDataInput{
+    color:palevioletred;
+    float:right;
+}
+
+.errorValidateInput{
+    color:red;
+    font-weight:900;
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}

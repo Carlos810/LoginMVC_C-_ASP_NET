@@ -1,0 +1,116 @@
+﻿@model crudAjax2020.Models.loginCrudAjax
+
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/stylesLogin.css" rel="stylesheet" />
+    <title>Index</title>
+
+</head>
+<body>
+    <div id="login-div" class="container">
+        <div class="row">
+            <div class="col-md-4 col-md-offset-4">
+                @using (Html.BeginForm("Index", "Login", FormMethod.Post))
+                {
+                        <div class="h1 text-center">Ingresa al Sistema</div>
+                        <hr />
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-user"></span>
+                                </span>
+                                @Html.TextBoxFor(x => x.UserName, new { @class = "form-control input", placeholder = "usuario: recluta" })
+                            </div>                        
+                            <p class="fillDataInput">@Html.ValidationMessageFor(model => model.UserName)</p>
+                            <br />
+                        </div>
+
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-eye-close"></span>
+                                </span>
+                                 @Html.TextBoxFor(x => x.StringPassword, new { @class = "form-control input", placeholder = "contraseña: 12345", type="password" })
+                            </div>
+                            <p class="fillDataInput">@Html.ValidationMessageFor(model => model.StringPassword)</p>
+                            <br />
+                        </div>
+
+
+                        <div class="errorValidateInput text-center">@Html.DisplayFor(model => model.LoginErrorMessage)</div>
+                        <hr />
+                        <div class="text-center">
+                            <button class="btn btn-danger btn-lg btn-limpiar" type="button">Limpiar</button>
+                            <button class="btn btn-success btn-lg" type="submit">Enviar</button>
+                        </div> 
+                }
+            </div>
+        </div>
+
+        <div class="row">
+            <table>
+                <tr>
+                    <td>
+                        @if (TempData["ERROR"] != null)
+	                    {
+                            @TempData["ERROR"].ToString();
+	                    }
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <script src="~/Scripts/jquery-1.12.1.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+
+    <script>
+
+        $(function () {
+
+            //funcion cambia color de background en input.
+            let inputChangeColor = function optimizar(param1) {
+
+                if ($(param1).val() != '') { //input con data
+                    $(param1).css("background-color", "#f6e58d");
+                } else {
+                    $(param1).css("background-color", "#fff");
+                }
+            }
+
+            $('#UserName').keyup(function () {
+                inputChangeColor('#UserName');
+            });
+
+            $('#StringPassword').keyup(function () {
+                inputChangeColor('#StringPassword');
+            });
+
+
+            $(".btn-limpiar").click(function () {
+                $('.input').val('');
+                $('.input').css("background-color", "#fff");
+                $('#UserName').focus();
+            });      
+
+
+
+
+            
+        });    // <=== semicolon final
+
+    </script>
+
+</body>
+</html>

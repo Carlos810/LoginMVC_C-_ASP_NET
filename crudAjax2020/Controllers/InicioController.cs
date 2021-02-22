@@ -6,7 +6,6 @@ using System.Linq;
 using System.Transactions;
 using System.Web;
 using System.Web.Mvc;
-using System.Text.RegularExpressions;
 
 namespace crudAjax2020.Controllers
 {
@@ -15,11 +14,29 @@ namespace crudAjax2020.Controllers
         // GET: Inicio
         public ActionResult Index()
         {
-            //"SelectList" solo se ocupa con los DropdownList.
-            ViewBag.SexoId = new SelectList(new BSexoDDL().ListaDDLSexo(), "Id", "Nombre");
-            // la lista musica solo provee registros que son obtenidos mediante foreach y por tanto no se usa la propiedad "SelectList".
-            ViewBag.MusicaId = new BMusicaCheckbox().ListaMusica();
-            return View();
+            try
+            {
+                Response.Cache.SetCacheability(HttpCacheability.NoCache);
+                Response.Cache.SetExpires(DateTime.Now.AddDays(-1));
+                Response.Cache.SetNoStore();
+                if (Session["UserId"] == null)
+                    throw new ApplicationException("Login Inválido.");
+                //"SelectList" solo se ocupa con los DropdownList.
+                ViewBag.SexoId = new SelectList(new BSexoDDL().ListaDDLSexo(), "Id", "Nombre");
+                // la lista musica solo provee registros que son obtenidos mediante foreach y por tanto no se usa la propiedad "SelectList".
+                ViewBag.MusicaId = new BMusicaCheckbox().ListaMusica();
+                return View();
+            }
+            catch (Exception ex)
+            {
+                TempData["ERROR"] = ex.Message;
+                //"SelectList" solo se ocupa con los DropdownList.
+                ViewBag.SexoId = new SelectList(new BSexoDDL().ListaDDLSexo(), "Id", "Nombre");
+                // la lista musica solo provee registros que son obtenidos mediante foreach y por tanto no se usa la propiedad "SelectList".
+                ViewBag.MusicaId = new BMusicaCheckbox().ListaMusica();
+                return RedirectToAction("Index","Login");
+            }
+
         }
 
         public ActionResult tablaPrincipal()
@@ -120,6 +137,10 @@ namespace crudAjax2020.Controllers
                 return Json(new { hayError = true, mensaje = ex.Message } , JsonRequestBehavior.AllowGet );
             }
         }
+
+
+
+
 
     }
 }

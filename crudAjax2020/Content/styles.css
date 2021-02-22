@@ -1,6 +1,28 @@
 ﻿body {
 }
 
+/* Centrando texto de tabla  */
+th.space{
+    width:1%;
+}
+
+#tBody tr td{
+    padding-left:9px;
+}
+
+#tBody tr td.padding-title {
+    padding: 5px;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+table-custom {
+    background: coral;
+    padding: 25px;
+    border-radius: 11px;
+}
+
+
 .errores{
     background: red;
     box-shadow: 0 0 10px rgba(0, 0, 0, .3);

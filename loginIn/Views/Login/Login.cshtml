@@ -1,0 +1,62 @@
+﻿@model loginIn.Models.loginCrudAjax
+
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link href="http://localhost:2555/Content/bootstrap.css" rel="stylesheet" />
+    <link href="~/Content/stylesLogin.css" rel="stylesheet" />
+    <title>Login to my AJAX_CRUD</title>
+</head>
+<body>
+    <div id="login-div" class="container">
+        <div class="row">
+            <div class="col-md-4 col-md-offset-4">
+                @using (Html.BeginForm("LoginP","Login",FormMethod.Post) )
+                {
+                    <div>
+                        <div class="h3 text-center">Ingresa tus credenciales</div>
+                        <hr />
+                        <div class="form-group">
+                            <div class="fillDataInput">@Html.ValidationMessageFor( model => model.UserName)</div>
+                            <label class="text-center" for="UserName">Usuario</label>
+                            <div autofocus>@Html.TextBoxFor(x => x.UserName,new { @class = "form-control", autofocus = "autofocus", placeholder = "Admin" })</div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="fillDataInput">@Html.ValidationMessageFor(model => model.StringPassword)</div>
+                            <label class="text-center" for="StringPassword">Contraseña</label>
+                            <div>@Html.TextBoxFor(x => x.StringPassword, new { @class = "form-control", placeholder = "12345" } )</div>
+                        </div>
+                        <div class="errorValidateInput text-center">@Html.DisplayFor(model => model.LoginErrorMessage)</div>
+                        <hr />
+
+                        <button class="btn btn-success btn-block" type="submit">Enviar</button>
+                        <button class="btn btn-danger btn-block" type="reset">Reset</button>
+                    </div>
+                }
+            </div>
+        </div> 
+
+        <div class="row">
+            <table>
+                <tr>
+                    <td>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <script src="~/Scripts/jquery-1.10.2.js"></script>
+    <script src="http://localhost:2555/Scripts/bootstrap.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+</body>
+</html>

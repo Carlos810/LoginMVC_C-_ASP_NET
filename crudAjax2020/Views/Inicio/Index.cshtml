@@ -1,9 +1,12 @@
 ﻿@using Enterprise.Capas.Business.EntityCapas
 @model List<EPersona>
-@using System.Text.RegularExpressions;
 
 @{
     Layout = null;
+    if (Session["UserId"] == null)
+    {
+        Response.Redirect("~/Index/Login");
+    }
 }
 
 <!DOCTYPE html>
@@ -11,15 +14,28 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
     <link href="~/Content/styles.css" rel="stylesheet" />
-    <link href="~/Content/bootstrap.css" rel="stylesheet" />
     <title>Index</title>
 </head>
 <body>
     <div class="container">
         <div class="row">
+            <div class="col-md-7">                
+                <div class="h3 text-center">
+                    Bienvenido : <strong>@Session["UserName"].ToString()dor</strong>
+                </div>
+            </div>
+            <div class="col-md-1 col-md-offset-1 pull-right">
+                    <a class="h3 btn btn-block btn-danger" style="text-decoration:none; margin:5px 5px;" href="@Url.Action("Logout","Login")">Cerrar</a>
+            </div>
+        </div>
+
+    </div>
+    <div class="container ">
+        <div class="row table-custom">
             <div class="col-md-7">
-                <div class="jumbotron">
+                <div class="jumbotron table-responsive ">
                     @*<div class="input-group">
                             <input class="form-control" placeholder="Buscar Persona">
                             <span class="input-group-btn">
@@ -29,17 +45,17 @@
                            </span>
                         </div>*@
 
-                    <table class="table table-responsive table-hover">
+                    <table class="table table-hover">
                         <thead>
                             <tr>
                                 <th>Nombre</th>
                                 <th>Paterno</th>
                                 <th>Materno</th>
                                 <th>Sexo</th>
-                                <th>Musica Favorita</th>
+                                <th class="space">Musica Favorita</th>
                                 <th></th>
                                 <th></th>
-                            </tr>
+                            </tr>                            
                         </thead>
                         <tbody id="tBody">
                             @*
@@ -123,15 +139,14 @@
         </table>
 
     </div>
+    
 
-    <script src="~/Scripts/jquery-1.9.0.js"></script>
+    <script src="~/Scripts/jquery-1.12.1.js"></script>
     <script src="~/Scripts/bootstrap.js"></script>
-    <script>        
 
-
+    <script>
         $(document).ready(function () {
-
-
+            //debugger;
             //Evento - Boton Cancelar.
             $('.btn-Cancelar').click(function () {
                 $('#mainTitle').text('Agregar Persona');
@@ -142,6 +157,7 @@
             });
 
             // Mostrar registros tabla Vista_Personas.
+                debugger;
             $.ajax({
                 url: '/Inicio/tablaPrincipal',
                 type: 'Get',
@@ -149,6 +165,7 @@
                 ContentType: 'application/json;charset=utf-8',
                 dataType: 'json',
                 success: function (r) {
+                //debugger;
                     if (r.hayError == true) {
                         alert(r.mensaje);
                     } else {
@@ -162,7 +179,7 @@
 
             // Agregar Persona.
             $('.btn-Agregar').click(function () {
-
+                debugger;
                 let objeto = {
                     Nombre: $("#Nombre").val(),
                     Paterno: $("#Paterno").val(),
@@ -174,6 +191,7 @@
                     chk5: "5 " + $("#chk5").prop('checked')
                 };
                 let objserializadojson = JSON.stringify(objeto);
+                debugger;
                 $.ajax({
                     url: '/Inicio/AgregarPersona',
                     type: 'POST',
@@ -195,8 +213,9 @@
                 });
             });
 
-            // EliminarPersona.
+            // Eliminar-Persona.
             $('.btn-Eliminar').click(function () {
+                debugger;
                 $.ajax({
                     url: '/Inicio/eliminarPersona/' + $('#V_Id').val(),
                     type: 'Post',
@@ -237,6 +256,7 @@
 
             });
 
+            // Editar-Persona
             $('.btn-Editar').click(function () {
                 debugger;
                 let objeto = {
@@ -278,23 +298,25 @@
                 });
             });
 
+
+
             //Funciones simplificar codigo.
 
             function tablaPersonasIzquierda(listaPersonas) {
                 var filas = "";
                 $.each(listaPersonas, function (i, e) {
-
+                    //debugger;
                     if (e.ListaMusica != 0) // persona ha seleccionado 1 o varios Generos Musicales.
                     {
                         let generosMusicales = "Mis generos favoritos son : \n";
                         $.each(e.ListaMusica, function (i, es) {
                             generosMusicales += "-> " + es.Nombre + " - " + es.Descripcion + " \n";
                         });
-                        filas += "<tr><td>" + e.Nombre + "</td><td>" + e.Paterno + "</td><td>" + e.Materno + "</td><td>" + e.SEXO.Nombre + "</td><td><a href='#' title='" + generosMusicales + "' style='text-decoration: none'>" + e.ListaMusica.length.toString() + "</a></td><td><a href='#' data-idpersona='" + e.Id + "' class='eliminar' >Eliminar</a></td> <td><a href='#' data-idpersona='" + e.Id + "' class='editar'>Editar</a></td>"
+                        filas += "<tr><td>" + e.Nombre + "</td><td>" + e.Paterno + "</td><td>" + e.Materno + "</td><td>" + e.SEXO.Nombre + "</td><td class='padding-title'><a href='#' title='" + generosMusicales + "' style='text-decoration: none'>" + e.ListaMusica.length.toString() + "</a></td><td><a href='#' data-idpersona='" + e.Id + "' class='eliminar' >Eliminar</a></td> <td><a href='#' data-idpersona='" + e.Id + "' class='editar'>Editar</a><td></tr>"
                     }
                     else // persona NO eligio generos musicales.
                     {
-                        filas += "<tr><td>" + e.Nombre + "</td><td>" + e.Paterno + "</td><td>" + e.Materno + "</td><td>" + e.SEXO.Nombre + "</td><td><a href='#' title='" + "No ha elegido generos musicales." + "' style='text-decoration: none'>" + e.ListaMusica.length.toString() + "</a></td><td><a href='#' data-idpersona='" + e.Id + "' class='eliminar' >Eliminar</a></td><td><a href='#' data-idpersona='" + e.Id + "' class='editar'>Editar</a></td>"
+                        filas += "<tr><td>" + e.Nombre + "</td><td>" + e.Paterno + "</td><td>" + e.Materno + "</td><td>" + e.SEXO.Nombre + "</td><td class='padding-title'><a href='#' title='" + "No ha elegido generos musicales." + "' style='text-decoration: none'>" + e.ListaMusica.length.toString() + "</a></td><td><a href='#' data-idpersona='" + e.Id + "' class='eliminar' >Eliminar</a></td><td><a href='#' data-idpersona='" + e.Id + "' class='editar'>Editar</a></td></tr>"
                     }
                 });
 
@@ -304,6 +326,7 @@
                 $(".eliminar").click(function () {
                     var id = $(this).data("idpersona");
                     cleanCheckboxMusic();
+                        debugger;
                     $.ajax({
                         url: '/Inicio/ObtenerPersonaPorId_B/' + id,
                         type: 'Get',
@@ -332,6 +355,7 @@
                 $(".editar").click(function () {
                     var id = $(this).data("idpersona");
                     cleanCheckboxMusic();
+                    debugger;
                     $.ajax({                        
                         url: '/Inicio/ObtenerPersonaPorId_B/' + id,
                         type: 'Get',
@@ -413,7 +437,14 @@
                 $('#chk5').prop('disabled', false);
             }
 
+            
         });// semicolon final.
     </script>
+
+
+
+
+
+
 </body>
 </html>
